@@ -1,5 +1,6 @@
 import express from 'express';
 import sql from './DB/db.js';
+// import client from './DB/PGDB.js'
 import cors from 'cors';
 
 const app = express();
@@ -9,6 +10,17 @@ app.use(express.json());
 app.get('/', (req, res) => {
   res.json({ message: "Hello world!" });
 });
+
+// GET route to fetch all users
+// app.get('/api/v2/users', async (req, res) => {
+//   try {
+//     const result = await client.query('SELECT * FROM users');
+//     res.status(200).json(result.rows);
+//   } catch (error) {
+//     console.error('Error fetching users', error.stack);
+//     res.status(500).json({ error: error.message });
+//   }
+// });
 
 app.get('/api/v1/users', async (req, res) => {
   try {
@@ -55,10 +67,10 @@ app.get('/api/v1/orders/:order_id', async (req, res) => {
       res.status(500).json({ error: error.message });
     }
   });
-
-
-// POST route for creating a new user
-app.post('/api/v1/users', async (req, res) => {
+    
+    
+    // POST route for creating a new user
+    app.post('/api/v1/users', async (req, res) => {
   const { first_name, last_name,age } = req.body;
   if (!first_name || !last_name || !age) {
     return res.status(400).json({ error: 'Name and age are required' });
