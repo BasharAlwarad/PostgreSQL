@@ -1,6 +1,9 @@
 import express from 'express';
 import sql from './DB/db.js';
 import cors from 'cors';
+import authRouter from './router/authRouter/authRouter.js'
+
+import {auth1, auth2} from './middlewars/auth.js'
 
 const app = express();
 app.use(cors({ origin: "*" }));
@@ -10,7 +13,7 @@ app.get('/', (req, res) => {
   res.json({ message: "Hello world!" });
 });
 
-app.get('/api/v1/users', async (req, res) => {
+app.get('/api/v1/users',auth1, async (req, res) => {
   try {
     const users = await sql`select * from users`;
     res.status(200).json(users);
@@ -18,6 +21,8 @@ app.get('/api/v1/users', async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
+
+app.use('/api/v1/auth/:token', auth2, auth1, authRouter);
 
 app.get('/api/v1/orders', async (req, res) => {
   try {
